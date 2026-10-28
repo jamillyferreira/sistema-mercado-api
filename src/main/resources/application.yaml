@@ -1,0 +1,24 @@
+# application.yaml
+spring:
+  application:
+    name: sistema-mercado-api
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://postgres:5432/${POSTGRES_DB} #  "postgres" = nome do serviço no compose
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate # só o Flyway altera o schema
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+logging:
+  level:
+    root: INFO
