@@ -1,0 +1,51 @@
+name: CI - Build and Test
+
+# Gatilhos -> Define quando esse workflow deve rodar
+on:
+  # RODA sempre que alguem enviar código diretamente para as branches main ou develop
+  push:
+    branches: [ "main", "develop" ]
+  # Roda sempre que alguém abrir/atualizar um PR para as branches main ou develop.
+  pull_request:
+    branches: [ "main", "develop" ]
+
+# Trabalhos -> Um workflow pode ter varios jobs, aqui temos somente um chamado build
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test123
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        # Só começa a rodar os passos quando o banco estiver 100% pronto
+        options: >-
+          --health-cmd "pg_isready -U test_user -d test_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+          --health-start-period 10s
+
+    # Passos -> Sequencia do que vai ser feito naquela maquina
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn -B clean verify --file pom.xml
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
+          SPRING_DATASOURCE_USERNAME: test_user
+          SPRING_DATASOURCE_PASSWORD: test123
