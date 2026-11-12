@@ -9,7 +9,7 @@ CREATE TABLE business
     name          VARCHAR(150),          -- opcional; preenchido depois no perfil
     business_type VARCHAR(100) NOT NULL, -- informado no signup; texto livre
     city          VARCHAR(100),
-    state         CHAR(2),
+    state         VARCHAR(2),
     address       VARCHAR(255),
     phone         VARCHAR(11),
     cnpj          VARCHAR(14),
@@ -129,7 +129,7 @@ CREATE TABLE clients
     phone        VARCHAR(11)    NOT NULL,
     email        VARCHAR(150),
     address      VARCHAR(255),
-    cep          CHAR(8),
+    cep          VARCHAR(8),
     document     VARCHAR(14),
     note         VARCHAR(500),
     credit_limit DECIMAL(10, 2) NOT NULL DEFAULT 0,
