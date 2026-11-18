@@ -1,7 +1,10 @@
 package com.ferreiradev.sistemamercado.user;
 
 import com.ferreiradev.sistemamercado.common.audit.BaseAudit;
+import com.ferreiradev.sistemamercado.common.exception.BusinessException;
+import com.ferreiradev.sistemamercado.common.exception.InvalidEmailException;
 import com.ferreiradev.sistemamercado.user.enums.Role;
+import com.ferreiradev.sistemamercado.common.exception.InvalidUsernameException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -55,11 +58,14 @@ public class User extends BaseAudit {
    }
 
    // Um factory para criar um admin
-   public static User createAdmin(String name, String email, String password, UUID businessId) {
+   public static User createAdmin(String name, String email, String passwordHash, UUID businessId) {
+      String validEmail = validateEmail(email);
+      validatePasswordHash(passwordHash);
+
       User user = new User();
       user.name = name;
-      user.email = email.trim().toLowerCase();
-      user.passwordHash = password; // TODO: trocar por hash
+      user.email = validEmail;
+      user.passwordHash = passwordHash; // sempre armazena HASH, nunca texto puro
       user.businessId = businessId;
       user.role = Role.ADMIN;
       user.active = true;
@@ -67,12 +73,14 @@ public class User extends BaseAudit {
    }
 
    // TODO: criar factory do employee
-   public static User createEmployee(String name, String username, String password, UUID businessId) {
-      validateUsername(username);
+   public static User createEmployee(String name, String username, String passwordHash, UUID businessId) {
+      String validUsername = validateUsername(username);
+      validatePasswordHash(passwordHash);
+
       User user = new User();
       user.name = name;
-      user.username = username.trim().toLowerCase();
-      user.passwordHash = password; // TODO: trocar por hash
+      user.username = validUsername;
+      user.passwordHash = passwordHash;
       user.role = Role.EMPLOYEE;
       user.businessId = businessId;
       user.active = true;
@@ -87,9 +95,32 @@ public class User extends BaseAudit {
       this.active = true;
    }
 
-   private static void validateUsername(String username) {
-      if (username == null || !username.matches("^[a-zA-Z0-9._-]{3,50}$")) {
-         throw new IllegalArgumentException("Username é inválido"); // TODO: Criar exception custom
+
+   private static String validateEmail(String email) {
+      if (email == null || email.isBlank()) {
+         throw new BusinessException("E-mail é obrigatório");
+      }
+
+      String normalizedEmail = email.trim().toLowerCase();
+      if (!normalizedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+         throw new InvalidEmailException("E-mail inválido");
+      }
+      return normalizedEmail;
+   }
+
+   private static String validateUsername(String username) {
+      if (username == null || username.isBlank()) {
+         throw new BusinessException("Username é obrigatório");
+      }
+      if (!username.matches("^[a-zA-Z0-9._-]{3,50}$")) {
+         throw new InvalidUsernameException("Username é inválido");
+      }
+      return username;
+   }
+
+   private static void validatePasswordHash(String passwordHash) {
+      if (passwordHash == null || passwordHash.isBlank()) {
+         throw new BusinessException("Senha é obrigatória");
       }
    }
 

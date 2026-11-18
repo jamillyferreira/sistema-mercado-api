@@ -1,4 +1,4 @@
-package com.ferreiradev.sistemamercado.user.dto.request;
+package com.ferreiradev.sistemamercado.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
