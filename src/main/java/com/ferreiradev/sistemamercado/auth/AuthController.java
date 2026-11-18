@@ -1,7 +1,7 @@
 package com.ferreiradev.sistemamercado.auth;
 
 import com.ferreiradev.sistemamercado.auth.dto.SignupRequest;
-import com.ferreiradev.sistemamercado.auth.dto.SignupResponse;
+import com.ferreiradev.sistemamercado.auth.dto.AuthResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class AuthController {
    private final AuthService authService;
 
    @PostMapping("/signup")
-   public ResponseEntity<SignupResponse> signup(@RequestBody @Valid SignupRequest request) {
-      SignupResponse response = authService.signup(request);
+   public ResponseEntity<AuthResponse> signup(@RequestBody @Valid SignupRequest request) {
+      AuthResponse response = authService.signup(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
    }
 

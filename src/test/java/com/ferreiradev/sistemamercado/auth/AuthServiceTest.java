@@ -1,7 +1,7 @@
 package com.ferreiradev.sistemamercado.auth;
 
 import com.ferreiradev.sistemamercado.auth.dto.SignupRequest;
-import com.ferreiradev.sistemamercado.auth.dto.SignupResponse;
+import com.ferreiradev.sistemamercado.auth.dto.AuthResponse;
 import com.ferreiradev.sistemamercado.business.Business;
 import com.ferreiradev.sistemamercado.business.BusinessRepository;
 import com.ferreiradev.sistemamercado.common.exception.EmailAlreadyExistsException;
@@ -65,11 +65,11 @@ class AuthServiceTest {
       when(jwtService.expiresInSeconds()).thenReturn(900L);
       when(userMapper.toResponse(any(User.class))).thenReturn(userDto);
 
-      SignupResponse result = authService.signup(request);
+      AuthResponse result = authService.signup(request);
 
       assertThat(result).isNotNull();
       assertThat(result.accessToken()).isEqualTo("token-jwt");
-      assertThat(result.tokenType()).isEqualTo(SignupResponse.BEARER);
+      assertThat(result.tokenType()).isEqualTo(AuthResponse.BEARER);
       assertThat(result.expiresIn()).isEqualTo(900L);
       assertThat(result.user()).isSameAs(userDto);
 

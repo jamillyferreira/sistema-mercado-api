@@ -1,7 +1,7 @@
 package com.ferreiradev.sistemamercado.auth;
 
 import com.ferreiradev.sistemamercado.auth.dto.SignupRequest;
-import com.ferreiradev.sistemamercado.auth.dto.SignupResponse;
+import com.ferreiradev.sistemamercado.auth.dto.AuthResponse;
 import com.ferreiradev.sistemamercado.business.Business;
 import com.ferreiradev.sistemamercado.business.BusinessRepository;
 import com.ferreiradev.sistemamercado.common.exception.EmailAlreadyExistsException;
@@ -26,7 +26,7 @@ public class AuthService {
 
    // Signup de admin
    @Transactional
-   public SignupResponse signup(SignupRequest request) {
+   public AuthResponse signup(SignupRequest request) {
       if (userRepository.existsByEmailIgnoreCase(request.email())) {
          throw new EmailAlreadyExistsException("Endereço de e-mail já está em uso");
       }
@@ -48,7 +48,7 @@ public class AuthService {
       long expiresIn = jwtService.expiresInSeconds();
       UserResponse userDto = userMapper.toResponse(savedUser);
 
-      return new SignupResponse(token, SignupResponse.BEARER, expiresIn, userDto);
+      return new AuthResponse(token, AuthResponse.BEARER, expiresIn, userDto);
    }
 
    // TODO: Criar login do admin, aceita email ou username para logar (username precisa existir)
