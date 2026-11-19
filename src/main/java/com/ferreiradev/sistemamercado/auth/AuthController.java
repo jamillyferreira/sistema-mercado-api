@@ -1,5 +1,6 @@
 package com.ferreiradev.sistemamercado.auth;
 
+import com.ferreiradev.sistemamercado.auth.dto.LoginRequest;
 import com.ferreiradev.sistemamercado.auth.dto.SignupRequest;
 import com.ferreiradev.sistemamercado.auth.dto.AuthResponse;
 import jakarta.validation.Valid;
@@ -21,6 +22,12 @@ public class AuthController {
    public ResponseEntity<AuthResponse> signup(@RequestBody @Valid SignupRequest request) {
       AuthResponse response = authService.signup(request);
       return ResponseEntity.status(HttpStatus.CREATED).body(response);
+   }
+
+   @PostMapping("/login")
+   public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
+      AuthResponse response = authService.login(request);
+      return ResponseEntity.status(HttpStatus.OK).body(response);
    }
 
 }
