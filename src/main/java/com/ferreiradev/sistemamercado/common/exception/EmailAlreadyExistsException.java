@@ -1,4 +1,4 @@
-package com.ferreiradev.sistemamercado.user.exception;
+package com.ferreiradev.sistemamercado.common.exception;
 
 public class EmailAlreadyExistsException extends RuntimeException {
    public EmailAlreadyExistsException(String message) {

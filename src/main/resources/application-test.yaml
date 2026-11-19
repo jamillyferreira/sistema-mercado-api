@@ -1,0 +1,4 @@
+# application-test.yaml
+jwt:
+  secret: "wcXv7DXpyYwvRexfyCiZXHoZnNc2sl2kBBEh0E/3kVgJZV/EY2ZUVRzMXBFf0Q2ENycjcGKiGePf1Bc4Rp/l+g=="
+  expiration-minutes: 5
