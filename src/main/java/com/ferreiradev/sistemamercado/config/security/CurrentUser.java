@@ -7,12 +7,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class CurrentUser {
 
-   public UUID id() {
+   public UUID getId() {
       return UUID.fromString(getJwt().getSubject());
    }
 
@@ -20,23 +21,27 @@ public class CurrentUser {
       return getJwt().getClaimAsString("name");
    }
 
-   public UUID businessId() {
+   public UUID getBusinessId() {
       return UUID.fromString(getJwt().getClaimAsString("businessId"));
    }
 
-   public Role role() {
+   public Role getRole() {
       return Role.valueOf(getJwt().getClaimAsString("role"));
    }
 
    public boolean isAdmin() {
-      return role() == Role.ADMIN;
+      return getRole() == Role.ADMIN;
    }
 
    private Jwt getJwt() {
+      return findJwt().orElseThrow(() -> new UnauthorizedException("Unauthorized"));
+   }
+
+   private Optional<Jwt> findJwt() {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
       if (auth == null || !(auth.getPrincipal() instanceof Jwt jwt)) {
-         throw new UnauthorizedException("Nenhum usuário autenticado");
+         return Optional.empty();
       }
-      return jwt;
+      return Optional.of(jwt);
    }
 }

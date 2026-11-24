@@ -40,6 +40,7 @@ public class SecurityConfig {
       return new BCryptPasswordEncoder();
    }
 
+
    private JwtAuthenticationConverter jwtAuthenticationConverter() {
       JwtGrantedAuthoritiesConverter authorities = new JwtGrantedAuthoritiesConverter();
       authorities.setAuthoritiesClaimName("role");

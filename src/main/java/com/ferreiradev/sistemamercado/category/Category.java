@@ -1,6 +1,7 @@
 package com.ferreiradev.sistemamercado.category;
 
 import com.ferreiradev.sistemamercado.common.audit.BaseAudit;
+import com.ferreiradev.sistemamercado.common.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "categories")
 public class Category extends BaseAudit {
@@ -22,10 +24,11 @@ public class Category extends BaseAudit {
    @Column(nullable = false, length = 150)
    private String name;
 
-   @Column(length = 150)
+   @Column(length = 255)
    private String description;
 
    public Category(UUID businessId, String name, String description) {
+      isNameValid(name);
       this.businessId = businessId;
       this.name = name;
       this.description = description;
@@ -38,12 +41,10 @@ public class Category extends BaseAudit {
       this.description = description; // description é um campo opcional
    }
 
-   private boolean isNameValid(String name) {
+   private void isNameValid(String name) {
       if (name == null || name.isEmpty()) {
-         // TODO criar uma exception custom
-         throw new IllegalArgumentException("Nome da categoria não pode ser vazia");
+         throw new BusinessException("Nome da categoria não pode ser vazia");
       }
-      return true;
    }
 
    @Override
